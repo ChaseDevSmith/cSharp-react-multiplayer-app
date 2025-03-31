@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:5179; img-src 'self' http://localhost:5179; style-src 'self' 'unsafe-inline';">
+    <title>SignalR Test Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script> <!-- SignalR Client -->
+</head>
+<body>
+    <h1>SignalR Test Client</h1>
+    <button onclick="createRoom()">Create Room</button>
+    <button onclick="joinRoom()">Join Room</button>
+    <button onclick="reportScore()">Report Score</button>
+
+    <div id="status"></div>
+    <div id="quiz-container">
+        <h2>Quiz Questions</h2>
+        <div id="quiz-questions"></div> 
+    </div>
+    
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5179/gameHub")
+    .configureLogging(signalR.LogLevel.Information)  
+    .build();
+
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("Connected to SignalR hub.");
+                document.getElementById("status").innerHTML = "Connected to SignalR hub.";
+            } catch (err) {
+                console.error("SignalR connection failed: ", err);
+                document.getElementById("status").innerHTML = `Failed to connect to SignalR hub: ${err.message}`;
+            }
+        }
+
+
+        startConnection();
+
+        connection.on("UserJoined", (connectionId) => {
+            document.getElementById("status").innerHTML = `User with connection ID ${connectionId} joined the room.`;
+        });
+
+        connection.on("ScoreUpdated", (userId, score) => {
+            document.getElementById("status").innerHTML = `User: ${userId} scored ${score} points.`;
+        });
+
+        connection.on("RoomCreated", (roomCode) => {
+            document.getElementById("status").innerHTML = `Room created with code: ${roomCode}`;
+        });
+
+        async function createRoom() {
+    if (connection.state === signalR.HubConnectionState.Connected) {
+        try {
+            const roomCode = await connection.invoke("CreateRoom");
+            document.getElementById("status").innerHTML = `Room created with code: ${roomCode}`;
+        } catch (err) {
+            document.getElementById("status").innerHTML = "Error creating room: " + err.message;
+        }
+    } else {
+        startConnection();  
+    }
+}
+
+
+    
+        async function joinRoom() {
+            const roomCode = prompt("Enter room code to join:");
+            if (connection.state === signalR.HubConnectionState.Connected) {
+                try {
+                    await connection.invoke("JoinRoom", roomCode);
+                    console.log(`Joined room: ${roomCode}`);
+                } catch (err) {
+                    console.error("Error joining room: ", err);
+                    document.getElementById("status").innerHTML = "Error joining room: " + err.message;
+                }
+            } else {
+                console.log("SignalR connection is not established yet.");
+                document.getElementById("status").innerHTML = "SignalR connection is not established yet.";
+            }
+        }
+
+        async function reportScore() {
+            const roomCode = prompt("Enter room code to report score:");
+            const userId = prompt("Enter user ID:");
+            const score = prompt("Enter score:");
+            if (connection.state === signalR.HubConnectionState.Connected) {
+                try {
+                    await connection.invoke("ReportScore", roomCode, userId, parseInt(score));
+                    console.log(`Reported score for user ${userId} in room ${roomCode}`);
+                } catch (err) {
+                    console.error("Error reporting score: ", err);
+                    document.getElementById("status").innerHTML = "Error reporting score: " + err.message;
+                }
+            } else {
+                console.log("SignalR connection is not established yet.");
+                document.getElementById("status").innerHTML = "SignalR connection is not established yet.";
+            }
+        }
+        async function fetchQuizQuestions() {
+    try {
+        const response = await fetch("http://localhost:5179/api/quiz/questions");
+        const questions = await response.json();
+
+        
+        displayQuizQuestions(questions);
+    } catch (err) {
+        console.error("Error fetching quiz questions: ", err);
+        document.getElementById("status").innerHTML = "Error fetching quiz questions: " + err.message;
+    }
+}
+function displayQuizQuestions(questions) {
+    const quizContainer = document.getElementById("quiz-questions");
+    quizContainer.innerHTML = "";  
+    
+    questions.forEach((question) => {
+ 
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("quiz-question");
+        
+        questionDiv.innerHTML = `
+            <p><strong>${question.question}</strong></p>
+            <img src="${question.imageUrl}" alt="Question Image" width="200" />
+            <div class="answers">
+                ${question.answers.map((answer, index) => `
+                    <button onclick="checkAnswer(${question.id}, '${answer}')">${answer}</button>
+                `).join('')}
+            </div>
+        `;
+        
+       
+        quizContainer.appendChild(questionDiv);
+    });
+}
+
+
+fetchQuizQuestions();
+
+    </script>
+</body>
+</html>
