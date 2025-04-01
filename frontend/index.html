@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:5179; img-src 'self' http://localhost:5179; style-src 'self' 'unsafe-inline';">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:5179; img-src 'self' http://localhost:5179; style-src 'self' 'unsafe-inline';"> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:5179 ws://localhost:5179; img-src 'self' http://localhost:5179; style-src 'self' 'unsafe-inline';">
     <title>SignalR Test Client</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script> <!-- SignalR Client -->
 </head>
-<body>
+<body bgcolor="gray">
     <h1>SignalR Test Client</h1>
+    <select id="gameType">
+        <option value="MusicQuiz">Music Quiz</option>
+        <option value="CountryQuiz">Country Quiz</option>
+    </select>
     <button onclick="createRoom()">Create Room</button>
     <button onclick="joinRoom()">Join Room</button>
-    <button onclick="reportScore()">Report Score</button>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="SendQuestionToRoom()">Report Score</button>
 
     <div id="status"></div>
     <div id="quiz-container">
-        <h2>Quiz Questions</h2>
+        <h2 style="color:red;">Quiz Questions</h2>
         <div id="quiz-questions"></div> 
     </div>
     
@@ -38,7 +44,7 @@
         }
 
 
-        startConnection();
+        
 
         connection.on("UserJoined", (connectionId) => {
             document.getElementById("status").innerHTML = `User with connection ID ${connectionId} joined the room.`;
@@ -51,11 +57,27 @@
         connection.on("RoomCreated", (roomCode) => {
             document.getElementById("status").innerHTML = `Room created with code: ${roomCode}`;
         });
+        connection.on("GameStarted", (message) => {
+        document.getElementById("status").innerHTML = message;
 
-        async function createRoom() {
+        });
+        connection.on("Question", (question) => {
+    console.log("Received question from backend:", question);
+    displayQuestion(question); 
+});
+connection.on("Error",(error)=>{
+    document.getElementById("status").innerHTML = `${error}`;
+
+}
+)
+startConnection();
+
+
+ async function createRoom() {
     if (connection.state === signalR.HubConnectionState.Connected) {
+        const gameType = document.getElementById("gameType").value; 
         try {
-            const roomCode = await connection.invoke("CreateRoom");
+            const roomCode = await connection.invoke("CreateRoom", gameType);
             document.getElementById("status").innerHTML = `Room created with code: ${roomCode}`;
         } catch (err) {
             document.getElementById("status").innerHTML = "Error creating room: " + err.message;
@@ -83,6 +105,25 @@
             }
         }
 
+
+        async function startGame() {
+    const roomCode = prompt("Enter room code to start the game:");
+    if (connection.state === signalR.HubConnectionState.Connected) {
+        try {
+            await connection.invoke("StartGame", roomCode);
+            console.log(`Game started in room: ${roomCode}`);
+            
+        } catch (err) {
+            console.error("Error starting game: ", err);
+            document.getElementById("status").innerHTML = "Error starting game: " + err.message;
+        }
+    }
+}
+async function SendQuestionToRoom(){
+
+}
+
+
         async function reportScore() {
             const roomCode = prompt("Enter room code to report score:");
             const userId = prompt("Enter user ID:");
@@ -102,7 +143,7 @@
         }
         async function fetchQuizQuestions() {
     try {
-        const response = await fetch("http://localhost:5179/api/quiz/questions");
+        const response = await fetch("http://localhost:5179/api/quiz/music");
         const questions = await response.json();
 
         
@@ -112,32 +153,52 @@
         document.getElementById("status").innerHTML = "Error fetching quiz questions: " + err.message;
     }
 }
-function displayQuizQuestions(questions) {
-    const quizContainer = document.getElementById("quiz-questions");
-    quizContainer.innerHTML = "";  
+// function displayQuizQuestions(questions) {
+//     const quizContainer = document.getElementById("quiz-questions");
+//     quizContainer.innerHTML = "";  
     
-    questions.forEach((question) => {
+//     questions.forEach((question) => {
  
-        const questionDiv = document.createElement("div");
-        questionDiv.classList.add("quiz-question");
+//         const questionDiv = document.createElement("div");
+//         questionDiv.classList.add("quiz-question");
         
-        questionDiv.innerHTML = `
-            <p><strong>${question.question}</strong></p>
-            <img src="${question.imageUrl}" alt="Question Image" width="200" />
-            <div class="answers">
-                ${question.answers.map((answer, index) => `
-                    <button onclick="checkAnswer(${question.id}, '${answer}')">${answer}</button>
-                `).join('')}
-            </div>
-        `;
+//         questionDiv.innerHTML = `
+//             <p><strong>${question.question}</strong></p>
+//             <img src="${question.imageUrl}" alt="Question Image" width="200" />
+//             <div class="answers">
+//                 ${question.answers.map((answer, index) => `
+//                     <button onclick="checkAnswer(${question.id}, '${answer}')">${answer}</button>
+//                 `).join('')}
+//             </div>
+//         `;
         
        
-        quizContainer.appendChild(questionDiv);
-    });
+//         quizContainer.appendChild(questionDiv);
+//     });
+// }
+
+function displayQuestion(question) {
+    const quizContainer = document.getElementById("quiz-questions");
+    quizContainer.innerHTML = ""; 
+
+    const questionDiv = document.createElement("div");
+    questionDiv.classList.add("quiz-question");
+
+    const imageElement = question.imageUrl ? `<img src="${question.imageUrl}" alt="Question Image" width="200" />` : '';
+
+    questionDiv.innerHTML = `
+        <p><strong>${question.questionText}</strong></p>
+        ${imageElement} <!-- Only adds the image if imageUrl exists -->
+        <div class="answers">
+            ${question.answers.map((answer, index) => `
+                <button onclick="checkAnswer(${question.id}, '${answer}')">${answer}</button>
+            `).join('')}
+        </div>
+    `;
+    
+    quizContainer.appendChild(questionDiv);
 }
 
-
-fetchQuizQuestions();
 
     </script>
 </body>

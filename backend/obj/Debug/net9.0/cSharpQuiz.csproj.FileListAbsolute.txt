@@ -99,3 +99,4 @@
 /Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/obj/Debug/net9.0/cSharpQuiz.pdb
 /Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/obj/Debug/net9.0/cSharpQuiz.genruntimeconfig.cache
 /Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/obj/Debug/net9.0/ref/cSharpQuiz.dll
+/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/obj/Debug/net9.0/cSharpQuiz.sourcelink.json
