@@ -11,7 +11,7 @@ COPY ./backend/*.csproj ./
 RUN dotnet restore
 
 # Copy remaining files and build the application
-COPY . ./
+COPY ./backened ./
 
 
 #####
