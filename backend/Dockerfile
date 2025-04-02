@@ -24,7 +24,7 @@ WORKDIR /app
 
 # Copy the published application from the build stage
 COPY --from=build /app/out ./
-COPY wwwroot /app/wwwroot
+COPY ./backened/wwwroot /app/wwwroot
 
 # Expose the port and define entrypoint
 EXPOSE 80
