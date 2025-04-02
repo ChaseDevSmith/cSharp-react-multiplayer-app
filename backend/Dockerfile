@@ -13,6 +13,9 @@ RUN dotnet restore
 # Copy remaining files and build the application
 COPY . ./
 
+
+#####
+RUN dotnet publish -c Release -o /app/out --no-build
 ################################################################################
 
 # Stage 2: Runtime image (final image).
