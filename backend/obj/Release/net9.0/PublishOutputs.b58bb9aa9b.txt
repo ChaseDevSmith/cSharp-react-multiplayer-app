@@ -1,0 +1,9 @@
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/cSharpQuiz
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/appsettings.Development.json
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/appsettings.json
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/cSharpQuiz.dll
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/cSharpQuiz.deps.json
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/cSharpQuiz.runtimeconfig.json
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/cSharpQuiz.pdb
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/Newtonsoft.Json.dll
+/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/bin/Release/net9.0/publish/System.Net.WebSockets.WebSocketProtocol.dll
