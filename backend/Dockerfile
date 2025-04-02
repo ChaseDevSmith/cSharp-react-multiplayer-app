@@ -15,7 +15,7 @@ COPY . ./
 
 
 #####
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o /app/out
 ################################################################################
 
 # Stage 2: Runtime image (final image).
