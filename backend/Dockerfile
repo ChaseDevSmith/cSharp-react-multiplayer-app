@@ -21,7 +21,8 @@ RUN dotnet restore
 
 # Copy remaining files and build the application
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o out --no-build
+
 
 # Use the runtime image to run the application
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS runtime
