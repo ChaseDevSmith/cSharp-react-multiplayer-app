@@ -1,19 +1,11 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ################################################################################
 
-# Learn about building .NET container images:
-# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-
-# Create a stage for building the application.
+# Stage 1: Build the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /app
+ARG TARGETARCH
 
 # Copy the project files and restore dependencies
 COPY ./backend/*.csproj ./
@@ -21,14 +13,18 @@ RUN dotnet restore
 
 # Copy remaining files and build the application
 COPY . ./
-RUN dotnet publish -c Release -o out --no-build
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    dotnet publish -c Release -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app/out
 
+################################################################################
 
-# Use the runtime image to run the application
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS runtime
+# Stage 2: Runtime image (final image).
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
 WORKDIR /app
+
+# Copy the published application from the build stage
 COPY --from=build /app/out ./
 
-# Expose the port and define the entry point
+# Expose the port and define entrypoint
 EXPOSE 80
 CMD ["dotnet", "cSharpQuiz.dll"]
