@@ -16,7 +16,6 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
 
 COPY ./*.csproj ./
-RUN dotnet restore
 
 COPY . ./
 
