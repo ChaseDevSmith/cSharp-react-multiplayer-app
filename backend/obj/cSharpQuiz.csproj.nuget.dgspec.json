@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/cSharpQuiz.csproj": {}
+    "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/cSharpQuiz.csproj": {}
   },
   "projects": {
-    "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/cSharpQuiz.csproj": {
+    "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/cSharpQuiz.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/cSharpQuiz.csproj",
+        "projectUniqueName": "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/cSharpQuiz.csproj",
         "projectName": "cSharpQuiz",
-        "projectPath": "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/cSharpQuiz.csproj",
+        "projectPath": "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/cSharpQuiz.csproj",
         "packagesPath": "/Users/chase/.nuget/packages/",
-        "outputPath": "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/obj/",
+        "outputPath": "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/obj/",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

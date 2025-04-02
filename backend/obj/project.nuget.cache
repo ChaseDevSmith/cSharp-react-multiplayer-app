@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IpKB8Y5oAf4=",
+  "dgSpecHash": "1oHtt6lQEhg=",
   "success": true,
-  "projectFilePath": "/Users/chase/Desktop/Projects/Coding Projects/cSharpQuiz/backend/cSharpQuiz.csproj",
+  "projectFilePath": "/Users/chase/Desktop/Projects/Coding Projects/cSharp-react-multiplayer-app/backend/cSharpQuiz.csproj",
   "expectedPackageFiles": [
     "/Users/chase/.nuget/packages/microsoft.aspnetcore.authentication.abstractions/2.3.0/microsoft.aspnetcore.authentication.abstractions.2.3.0.nupkg.sha512",
     "/Users/chase/.nuget/packages/microsoft.aspnetcore.authorization/2.3.0/microsoft.aspnetcore.authorization.2.3.0.nupkg.sha512",
