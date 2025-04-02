@@ -14,8 +14,6 @@
 # Create a stage for building the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
-COPY . /source
-
 
 
 
@@ -23,6 +21,11 @@ COPY . /source
 # This is the architecture you’re building for, which is passed in by the builder.
 # Placing it here allows the previous steps to be cached across architectures.
 ARG TARGETARCH
+
+
+COPY ./cSharpQuiz.csproj ./
+RUN dotnet restore ./cSharpQuiz.csproj -a $TARGETARCH
+# COPY . ./
 
 # Build the application.
 # Leverage a cache mount to /root/.nuget/packages so that subsequent builds don't have to re-download packages.
@@ -38,12 +41,11 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 # runtime dependencies for the application. This often uses a different base
 # image from the build stage where the necessary files are copied from the build
 # stage.
-COPY --link *.csproj .
-RUN dotnet restore -a $TARGETARCH
+
 
 # Copy source code and publish app
-COPY --link . .
-RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+
+
 
 # The example below uses an aspnet alpine image as the foundation for running the app.
 # It will also use whatever happens to be the most recent version of that tag when you
