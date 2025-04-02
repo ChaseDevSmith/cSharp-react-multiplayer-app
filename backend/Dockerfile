@@ -16,7 +16,7 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /app
 
 # Copy the project files and restore dependencies
-COPY *.csproj ./
+COPY ./backend/*.csproj ./
 RUN dotnet restore
 
 # Copy remaining files and build the application
