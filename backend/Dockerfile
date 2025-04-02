@@ -1,30 +1,33 @@
-# Use the official .NET SDK image as the build image
+# syntax=docker/dockerfile:1
+
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
+
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+
+################################################################################
+
+# Learn about building .NET container images:
+# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
+
+# Create a stage for building the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
-WORKDIR /source
-
-# Define the architecture for the build (passed in by the builder)
-ARG TARGETARCH
-
-# Copy the .csproj file and restore any dependencies (via dotnet restore)
-COPY ./source/cSharpQuiz.csproj .
-RUN dotnet restore ./cSharpQuiz.csproj -a $TARGETARCH
-
-# Copy the rest of the source code
-COPY . ./
-
-# Build the application and publish it to a folder in the container
-RUN dotnet publish ./cSharpQuiz.csproj -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app/publish
-
-# Use a smaller base image for the runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 WORKDIR /app
-EXPOSE 5501
 
-# Copy the published output from the build image to the runtime image
-COPY --from=build /app/publish .
+# Copy the project files and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
 
-# Switch to a non-privileged user (if you want, to improve security)
-USER $APP_UID
+# Copy remaining files and build the application
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# Define the entry point for the application
-ENTRYPOINT ["dotnet", "cSharpQuiz.dll"]
+# Use the runtime image to run the application
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
+
+# Expose the port and define the entry point
+EXPOSE 80
+CMD ["dotnet", "cSharpQuiz.dll"]
