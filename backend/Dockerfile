@@ -14,7 +14,7 @@
 # Create a stage for building the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
-
+COPY . /source
 COPY ./*.csproj ./
 
 COPY . ./
