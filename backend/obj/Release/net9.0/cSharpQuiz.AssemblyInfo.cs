@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cSharpQuiz")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a28469178d1d8991ce4581b99e475c0cea2408dc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3ea133b8ecd48035d02ab9ef21fa70e709e121f")]
 [assembly: System.Reflection.AssemblyProductAttribute("cSharpQuiz")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cSharpQuiz")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
