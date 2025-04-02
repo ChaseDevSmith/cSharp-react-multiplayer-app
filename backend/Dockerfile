@@ -18,7 +18,7 @@ COPY ./*.csproj ./
 RUN dotnet restore
 
 COPY . ./
-COPY wwwroot /app/wwwroot
+
 
 
 WORKDIR /source
